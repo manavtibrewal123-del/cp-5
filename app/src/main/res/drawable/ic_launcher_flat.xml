@@ -8,6 +8,10 @@
     <path
         android:fillColor="#0F1115"
         android:pathData="M54,30 C66,30 71,38 71,38 L71,56 C71,67 63,76 54,80 C45,76 37,67 37,56 L37,38 C37,38 42,30 54,30 Z" />
-    <circle android:fillColor="#4DA3FF" android:cx="54" android:cy="55" android:r="10" />
-    <circle android:fillColor="#0F1115" android:cx="54" android:cy="55" android:r="4.5" />
+    <path
+        android:fillColor="#4DA3FF"
+        android:pathData="M44,55 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0 Z" />
+    <path
+        android:fillColor="#0F1115"
+        android:pathData="M49.5,55 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z" />
 </vector>
