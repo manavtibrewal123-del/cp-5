@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "733980822618",
+    "project_id": "hmc-cctv",
+    "storage_bucket": "hmc-cctv.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:733980822618:android:e35658df3b687c4e06dc63",
+        "android_client_info": {
+          "package_name": "com.shyamannirman.cctv"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAU5kf_fmeIwXL_MLOR9RuwtGJHkkRnAA0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
