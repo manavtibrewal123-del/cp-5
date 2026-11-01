@@ -1,0 +1,13 @@
+<resources>
+    <color name="bg">#0F1115</color>
+    <color name="surface">#1A1D23</color>
+    <color name="surface_raised">#22262E</color>
+    <color name="accent">#4DA3FF</color>
+    <color name="accent_soft">#2A3B52</color>
+    <color name="text_primary">#F2F3F5</color>
+    <color name="text_secondary">#8C92A0</color>
+    <color name="divider">#2A2E36</color>
+    <color name="danger">#FF6B6B</color>
+    <color name="overlay">#99000000</color>
+    <color name="overlay_light">#55000000</color>
+</resources>

@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // True only for the single admin recorded in meta/admin.
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/meta/admin)
+        && get(/databases/$(database)/documents/meta/admin).data.uid == request.auth.uid;
+    }
+
+    // Any signed-in person who still has an account record (admin or viewer).
+    function hasAccount() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    // Written once, by the first admin, never changed afterwards.
+    match /meta/admin {
+      allow read: if true;   // lets the app tell "first-time setup" from "sign in"
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    match /users/{uid} {
+      allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
+      // The admin may create viewers; the new admin may create their own record once.
+      allow create: if (isAdmin() && request.resource.data.role == 'VIEWER')
+        || (request.auth != null && request.auth.uid == uid
+            && request.resource.data.role == 'ADMIN'
+            && exists(/databases/$(database)/documents/meta/admin)
+            && get(/databases/$(database)/documents/meta/admin).data.uid == uid);
+      allow update: if false;
+      allow delete: if isAdmin() && resource.data.role == 'VIEWER';
+    }
+
+    // Everyone with an account can watch; only the admin can add, change or remove cameras.
+    match /cameras/{id} {
+      allow read: if hasAccount();
+      allow write: if isAdmin();
+    }
+  }
+}

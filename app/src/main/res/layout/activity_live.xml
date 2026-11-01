@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#000000">
+
+    <androidx.media3.ui.PlayerView android:id="@+id/player"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        app:use_controller="false" app:resize_mode="fit" />
+
+    <TextView android:id="@+id/status" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_gravity="center"
+        android:padding="24dp" android:textColor="@color/text_primary"
+        android:textSize="14sp" android:gravity="center" />
+
+    <!-- Everything below fades in/out together as "controls" -->
+    <FrameLayout android:id="@+id/controls" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_gravity="top" android:orientation="horizontal"
+            android:gravity="center_vertical" android:background="@color/overlay_light"
+            android:paddingTop="14dp" android:paddingBottom="14dp"
+            android:paddingStart="8dp" android:paddingEnd="16dp">
+            <ImageButton android:id="@+id/btnBack" android:layout_width="44dp" android:layout_height="44dp"
+                android:background="@android:color/transparent"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:contentDescription="Back" />
+            <TextView android:id="@+id/tvTitle" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:textColor="@color/text_primary"
+                android:textSize="16sp" android:textStyle="bold" android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- PTZ pad: shown only for cameras with ONVIF enabled -->
+        <GridLayout android:id="@+id/ptzPad"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start" android:layout_margin="20dp"
+            android:columnCount="3" android:rowCount="3" android:visibility="gone">
+
+            <View android:layout_width="44dp" android:layout_height="44dp"
+                android:layout_row="0" android:layout_column="0" />
+            <ImageButton android:id="@+id/btnPtzUp" android:layout_width="44dp" android:layout_height="44dp"
+                android:layout_row="0" android:layout_column="1" android:background="@drawable/bg_icon_btn"
+                android:src="@android:drawable/arrow_up_float" android:contentDescription="Tilt up" />
+            <View android:layout_width="44dp" android:layout_height="44dp"
+                android:layout_row="0" android:layout_column="2" />
+
+            <ImageButton android:id="@+id/btnPtzLeft" android:layout_width="44dp" android:layout_height="44dp"
+                android:layout_row="1" android:layout_column="0" android:background="@drawable/bg_icon_btn"
+                android:src="@android:drawable/ic_media_rew" android:contentDescription="Pan left" />
+            <View android:layout_width="44dp" android:layout_height="44dp"
+                android:layout_row="1" android:layout_column="1" />
+            <ImageButton android:id="@+id/btnPtzRight" android:layout_width="44dp" android:layout_height="44dp"
+                android:layout_row="1" android:layout_column="2" android:background="@drawable/bg_icon_btn"
+                android:src="@android:drawable/ic_media_ff" android:contentDescription="Pan right" />
+
+            <View android:layout_width="44dp" android:layout_height="44dp"
+                android:layout_row="2" android:layout_column="0" />
+            <ImageButton android:id="@+id/btnPtzDown" android:layout_width="44dp" android:layout_height="44dp"
+                android:layout_row="2" android:layout_column="1" android:background="@drawable/bg_icon_btn"
+                android:src="@android:drawable/arrow_down_float" android:contentDescription="Tilt down" />
+            <View android:layout_width="44dp" android:layout_height="44dp"
+                android:layout_row="2" android:layout_column="2" />
+        </GridLayout>
+
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end" android:orientation="horizontal"
+            android:padding="20dp">
+
+            <ImageButton android:id="@+id/btnResetZoom"
+                android:layout_width="48dp" android:layout_height="48dp"
+                android:layout_marginEnd="14dp" android:background="@drawable/bg_icon_btn"
+                android:src="@android:drawable/ic_menu_revert" android:contentDescription="Reset zoom" />
+
+            <ImageButton android:id="@+id/btnSnapshot"
+                android:layout_width="48dp" android:layout_height="48dp"
+                android:background="@drawable/bg_icon_btn"
+                android:src="@android:drawable/ic_menu_camera" android:contentDescription="Snapshot" />
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/bg">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:paddingStart="20dp" android:paddingEnd="12dp"
+        android:paddingTop="20dp" android:paddingBottom="8dp">
+
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:text="Cameras"
+            android:textColor="@color/text_primary" android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <ImageButton android:id="@+id/btnSettings" android:layout_width="44dp" android:layout_height="44dp"
+            android:background="@drawable/bg_icon_btn" android:layout_marginEnd="8dp"
+            android:src="@android:drawable/ic_menu_preferences" android:contentDescription="Settings" />
+
+        <ImageButton android:id="@+id/btnGrid" android:layout_width="44dp" android:layout_height="44dp"
+            android:background="@drawable/bg_icon_btn" android:layout_marginEnd="8dp"
+            android:src="@android:drawable/ic_menu_view" android:contentDescription="View all" />
+
+        <ImageButton android:id="@+id/btnAdd" android:layout_width="44dp" android:layout_height="44dp"
+            android:background="@drawable/bg_icon_btn"
+            android:src="@android:drawable/ic_input_add" android:contentDescription="Add camera" />
+    </LinearLayout>
+
+    <EditText android:id="@+id/etSearch" style="@style/MinimalInput"
+        android:layout_marginStart="16dp" android:layout_marginEnd="16dp"
+        android:layout_marginTop="4dp" android:layout_marginBottom="4dp"
+        android:hint="Search by name or location" android:inputType="text"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawablePadding="10dp" android:drawableTint="@color/text_secondary" />
+
+    <TextView android:id="@+id/empty" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:padding="40dp"
+        android:text="No cameras yet.\nTap + to add one with its IP, ID and password."
+        android:textColor="@color/text_secondary" android:textSize="14sp"
+        android:gravity="center" android:lineSpacingExtra="4dp" />
+
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/list"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:paddingStart="16dp" android:paddingEnd="16dp" android:paddingTop="8dp"
+        android:clipToPadding="false" />
+</LinearLayout>

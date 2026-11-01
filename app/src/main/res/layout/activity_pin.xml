@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:gravity="center" android:background="@color/bg"
+    android:padding="32dp">
+
+    <TextView android:id="@+id/tvPinTitle" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Enter PIN" android:textColor="@color/text_primary"
+        android:textSize="20sp" android:textStyle="bold" android:layout_marginBottom="4dp" />
+
+    <TextView android:id="@+id/tvPinSubtitle" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="" android:textColor="@color/text_secondary" android:textSize="13sp"
+        android:layout_marginBottom="20dp" android:gravity="center" />
+
+    <EditText android:id="@+id/etPin" style="@style/MinimalInput"
+        android:layout_width="220dp" android:hint="PIN"
+        android:inputType="numberPassword" android:gravity="center" android:textSize="22sp"
+        android:letterSpacing="0.3" />
+
+    <Button android:id="@+id/btnPinGo" android:layout_width="220dp" android:layout_height="52dp"
+        android:layout_marginTop="8dp" android:text="Continue" android:textColor="@color/bg"
+        android:textStyle="bold" android:backgroundTint="@color/accent" android:background="@drawable/bg_input" />
+
+    <TextView android:id="@+id/tvPinError" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginTop="14dp" android:textColor="@color/danger" android:textSize="13sp"
+        android:visibility="invisible" android:text="Incorrect PIN" />
+</LinearLayout>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/bg">
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical" android:padding="20dp">
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Add camera" android:textColor="@color/text_primary"
+        android:textSize="22sp" android:textStyle="bold" android:layout_marginBottom="20dp" />
+
+    <EditText android:id="@+id/etName" style="@style/MinimalInput"
+        android:hint="Name" android:inputType="textCapWords" />
+    <EditText android:id="@+id/etLocation" style="@style/MinimalInput"
+        android:hint="Location / Ward (e.g. Ward 12, Belilious Rd junction)"
+        android:inputType="textCapWords" />
+    <EditText android:id="@+id/etHost" style="@style/MinimalInput"
+        android:hint="IP address or DDNS host" android:inputType="textUri" />
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText android:id="@+id/etPort" style="@style/MinimalInput"
+            android:layout_width="0dp" android:layout_weight="1" android:layout_marginEnd="8dp"
+            android:hint="Port" android:inputType="number" android:text="554" />
+        <EditText android:id="@+id/etChannel" style="@style/MinimalInput"
+            android:layout_width="0dp" android:layout_weight="1" android:layout_marginStart="8dp"
+            android:hint="Channel" android:inputType="number" android:text="1" />
+    </LinearLayout>
+
+    <EditText android:id="@+id/etUser" style="@style/MinimalInput"
+        android:hint="ID / username" android:inputType="text" />
+    <EditText android:id="@+id/etPass" style="@style/MinimalInput"
+        android:hint="Password" android:inputType="textPassword" />
+
+    <RadioGroup android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:layout_marginTop="4dp" android:layout_marginBottom="8dp">
+        <RadioButton android:id="@+id/rbMain" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:checked="true" android:text="Main stream"
+            android:textColor="@color/text_secondary" android:buttonTint="@color/accent" />
+        <RadioButton android:id="@+id/rbSub" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="Sub stream"
+            android:layout_marginStart="20dp"
+            android:textColor="@color/text_secondary" android:buttonTint="@color/accent" />
+    </RadioGroup>
+
+    <TextView android:id="@+id/tvAdvancedToggle" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:text="Advanced options ▾"
+        android:textColor="@color/accent" android:textSize="14sp"
+        android:padding="8dp" android:layout_marginTop="8dp" />
+
+    <LinearLayout android:id="@+id/advancedSection" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="vertical"
+        android:visibility="gone" android:layout_marginTop="4dp">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Custom RTSP URL (for test streams)" android:textColor="@color/text_secondary"
+            android:textSize="12sp" android:layout_marginBottom="6dp" />
+        <EditText android:id="@+id/etCustomUrl" style="@style/MinimalInput" android:hint="rtsp://..." android:inputType="textUri" />
+
+        <CheckBox android:id="@+id/cbOnvif" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="8dp"
+            android:text="Enable PTZ (needs ONVIF on the camera)"
+            android:textColor="@color/text_secondary" android:buttonTint="@color/accent" />
+        <EditText android:id="@+id/etOnvifPort" style="@style/MinimalInput"
+            android:hint="ONVIF port" android:inputType="number" android:text="80" />
+    </LinearLayout>
+
+    <Button android:id="@+id/btnSave" android:layout_width="match_parent"
+        android:layout_height="52dp" android:layout_marginTop="12dp"
+        android:text="Save" android:textColor="@color/bg" android:textStyle="bold"
+        android:backgroundTint="@color/accent" android:background="@drawable/bg_input" />
+</LinearLayout>
+</ScrollView>
