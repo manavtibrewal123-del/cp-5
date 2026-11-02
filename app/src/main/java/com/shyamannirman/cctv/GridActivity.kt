@@ -77,7 +77,10 @@ class GridActivity : AppCompatActivity() {
         release()
     }
 
+    private var buildCount = 0
+
     private fun build() {
+        buildCount++
         release()
         grid.removeAllViews()
         grid.columnCount = columns
@@ -104,7 +107,10 @@ class GridActivity : AppCompatActivity() {
                 width = cellW; height = cellH; setMargins(0, 0, 2, 2)
             })
 
-            val source = RtspMediaSource.Factory().setForceUseRtpTcp(true)
+            val source = RtspMediaSource.Factory()
+                .setForceUseRtpTcp(buildCount % 2 == 1) // alternate TCP / UDP on each rebuild
+                .setTimeoutMs(15000)
+                .setUserAgent("LibVLC/3.0.18")
                 .createMediaSource(MediaItem.fromUri(Uri.parse(cam.rtspUrl(sub = 1))))
             val p = ExoPlayer.Builder(this).build()
             pv.player = p

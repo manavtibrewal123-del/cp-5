@@ -144,9 +144,15 @@ class LiveActivity : AppCompatActivity() {
 
     private fun start() {
         val cam = camera ?: run { status.text = "Camera not found"; return }
-        status.text = "Connecting…"
+        // Like VLC, try both ways: some cameras/DVRs only work with TCP, others only with UDP.
+        // Attempts alternate TCP, UDP, TCP, UDP... until one connects.
+        val useTcp = reconnectAttempt % 2 == 0
+        val mode = if (useTcp) "TCP" else "UDP"
+        status.text = "Connecting ($mode)…"
         val source = RtspMediaSource.Factory()
-            .setForceUseRtpTcp(true) // more reliable over Wi-Fi / internet
+            .setForceUseRtpTcp(useTcp)
+            .setTimeoutMs(15000)
+            .setUserAgent("LibVLC/3.0.18")
             .createMediaSource(MediaItem.fromUri(Uri.parse(cam.rtspUrl())))
         player = ExoPlayer.Builder(this).build().also { p ->
             playerView.player = p
@@ -157,7 +163,10 @@ class LiveActivity : AppCompatActivity() {
                     if (state == Player.STATE_ENDED) scheduleReconnect("Stream ended — reconnecting…")
                 }
                 override fun onPlayerError(error: PlaybackException) {
-                    scheduleReconnect("Connection lost — reconnecting… (${error.errorCodeName})")
+                    // Show the real reason (e.g. "401 Unauthorized", "timeout", "refused") to help diagnose.
+                    val root = generateSequence<Throwable>(error) { it.cause }.last()
+                    val detail = root.message ?: root.javaClass.simpleName
+                    scheduleReconnect("Can't connect ($mode) — retrying…\n${error.errorCodeName}: $detail")
                 }
             })
             p.prepare()
