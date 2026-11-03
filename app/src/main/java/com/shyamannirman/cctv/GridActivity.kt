@@ -13,21 +13,17 @@ import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
-import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.rtsp.RtspMediaSource
-import androidx.media3.ui.PlayerView
+import org.videolan.libvlc.LibVLC
+import org.videolan.libvlc.Media
+import org.videolan.libvlc.MediaPlayer
+import org.videolan.libvlc.util.VLCVideoLayout
 
-/** Shows saved cameras together using the light sub-stream, in a 2x2 or 3x3 grid. */
-@OptIn(UnstableApi::class)
+/** Shows saved cameras together using the light sub-stream, in a 2x2 or 3x3 grid (libVLC player). */
 class GridActivity : AppCompatActivity() {
-    private val players = mutableListOf<ExoPlayer>()
+    private var libVlc: LibVLC? = null
+    private val players = mutableListOf<MediaPlayer>()
     private lateinit var grid: GridLayout
     private lateinit var btn2x2: Button
     private lateinit var btn3x3: Button
@@ -88,9 +84,15 @@ class GridActivity : AppCompatActivity() {
         val dm = resources.displayMetrics
         val cellW = dm.widthPixels / columns
         val cellH = cellW * 9 / 16
+
+        // One LibVLC engine is shared by all tiles.
+        val vlc = LibVLC(this, arrayListOf<String>())
+        libVlc = vlc
+        val useTcp = buildCount % 2 == 1 // alternate TCP / UDP on each rebuild
+
         for (cam in CameraStore.all()) {
             val cell = FrameLayout(this)
-            val pv = PlayerView(this).apply { useController = false }
+            val videoLayout = VLCVideoLayout(this)
             val label = TextView(this).apply {
                 text = cam.name
                 setTextColor(0xFFFFFFFF.toInt())
@@ -98,7 +100,7 @@ class GridActivity : AppCompatActivity() {
                 setPadding(12, 4, 12, 4)
                 textSize = if (columns == 3) 10f else 12f
             }
-            cell.addView(pv, FrameLayout.LayoutParams(
+            cell.addView(videoLayout, FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
             cell.addView(label, FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -107,30 +109,39 @@ class GridActivity : AppCompatActivity() {
                 width = cellW; height = cellH; setMargins(0, 0, 2, 2)
             })
 
-            val source = RtspMediaSource.Factory()
-                .setForceUseRtpTcp(buildCount % 2 == 1) // alternate TCP / UDP on each rebuild
-                .setTimeoutMs(15000)
-                .setUserAgent("LibVLC/3.0.18")
-                .createMediaSource(MediaItem.fromUri(Uri.parse(cam.rtspUrl(sub = 1))))
-            val p = ExoPlayer.Builder(this).build()
-            pv.player = p
-            p.setMediaSource(source)
-            p.addListener(object : Player.Listener {
-                override fun onPlayerError(error: PlaybackException) { scheduleRebuild() }
-                override fun onPlaybackStateChanged(state: Int) {
-                    if (state == Player.STATE_ENDED) scheduleRebuild()
+            val mp = MediaPlayer(vlc)
+            mp.attachViews(videoLayout, null, false, false)
+            mp.videoScale = MediaPlayer.ScaleType.SURFACE_BEST_FIT
+            mp.volume = 0
+
+            val media = Media(vlc, Uri.parse(cam.rtspUrl(sub = 1)))
+            media.addOption(":network-caching=300")
+            media.addOption(":no-audio") // tiles are silent, and this skips the audio track entirely
+            if (useTcp) media.addOption(":rtsp-tcp")
+            mp.media = media
+            media.release()
+
+            mp.setEventListener { event ->
+                when (event.type) {
+                    MediaPlayer.Event.EncounteredError,
+                    MediaPlayer.Event.EndReached -> runOnUiThread { scheduleRebuild() }
                 }
-            })
-            p.prepare()
-            p.playWhenReady = true
-            p.volume = 0f
-            players.add(p)
+            }
+            mp.play()
+            players.add(mp)
         }
     }
 
     private fun release() {
-        players.forEach { it.release() }
+        players.forEach { mp ->
+            mp.setEventListener(null)
+            try { mp.stop() } catch (_: Exception) {}
+            try { mp.detachViews() } catch (_: Exception) {}
+            mp.release()
+        }
         players.clear()
+        libVlc?.release()
+        libVlc = null
     }
 
     /** One dropped tile rebuilds the whole grid after a short delay — simple and fine
