@@ -54,6 +54,12 @@ object CameraStore {
         db.collection("cameras").document(cam.id).set(cam.toMap())
     }
 
+    /** Saves changes to an existing camera (same id), replacing its stored details. */
+    fun update(cam: Camera) {
+        requireAdmin()
+        db.collection("cameras").document(cam.id).set(cam.toMap())
+    }
+
     fun remove(id: String) {
         requireAdmin()
         db.collection("cameras").document(id).delete()
