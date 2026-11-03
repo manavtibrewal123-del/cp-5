@@ -13,6 +13,9 @@ class SplashActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var shownAt = 0L
 
+    // How long the splash screen stays visible, in milliseconds (2500 = 2.5 seconds).
+    private val splashMillis = 2500L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -29,7 +32,7 @@ class SplashActivity : AppCompatActivity() {
                 handler.postDelayed({ route() }, 3000)
                 return@isSetupDone
             }
-            val wait = (2500 - (System.currentTimeMillis() - shownAt)).coerceAtLeast(0)
+            val wait = (splashMillis - (System.currentTimeMillis() - shownAt)).coerceAtLeast(0)
             handler.postDelayed({
                 val next = if (done) LoginActivity::class.java else AdminSetupActivity::class.java
                 startActivity(Intent(this, next))
