@@ -29,7 +29,7 @@ class SplashActivity : AppCompatActivity() {
                 handler.postDelayed({ route() }, 3000)
                 return@isSetupDone
             }
-            val wait = (900 - (System.currentTimeMillis() - shownAt)).coerceAtLeast(0)
+            val wait = (2500 - (System.currentTimeMillis() - shownAt)).coerceAtLeast(0)
             handler.postDelayed({
                 val next = if (done) LoginActivity::class.java else AdminSetupActivity::class.java
                 startActivity(Intent(this, next))
