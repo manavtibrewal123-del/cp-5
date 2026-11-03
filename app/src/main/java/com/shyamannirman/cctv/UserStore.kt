@@ -29,6 +29,36 @@ object UserStore {
     fun validUsername(username: String) = USERNAME_RE.matches(normalize(username))
     private fun email(username: String) = "${normalize(username)}@hmc-cctv.app"
 
+    /**
+     * Restores a saved sign-in after the app is reopened.
+     * cb(user, failed):
+     *  - (user, false)  a saved login exists and is still valid
+     *  - (null, false)  nobody is signed in, or the account was removed -> show the login screen
+     *  - (null, true)   couldn't check (no internet) -> the caller should retry
+     */
+    fun restoreSession(cb: (User?, Boolean) -> Unit) {
+        val fbUser = auth.currentUser ?: return cb(null, false)
+        db.collection("users").document(fbUser.uid).get()
+            .addOnSuccessListener { d ->
+                if (!d.exists()) {
+                    auth.signOut()
+                    cb(null, false)
+                } else {
+                    val role = try { Role.valueOf(d.getString("role") ?: "VIEWER") } catch (e: Exception) { Role.VIEWER }
+                    cb(User(fbUser.uid, d.getString("username") ?: "?", role), false)
+                }
+            }
+            .addOnFailureListener { e ->
+                if (e is FirebaseFirestoreException &&
+                    e.code == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+                    auth.signOut()
+                    cb(null, false)
+                } else {
+                    cb(null, true)
+                }
+            }
+    }
+
     /** true = an admin exists, false = first-time setup needed, null = couldn't reach the server. */
     fun isSetupDone(cb: (Boolean?) -> Unit) {
         db.collection("meta").document("admin").get(Source.SERVER)
